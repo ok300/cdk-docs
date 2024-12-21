@@ -1,0 +1,8 @@
+site_name: CDK Docs
+
+nav:
+  - About CDK: index.md
+  - Mint:
+    - Intro: mint/intro.md
+  - Wallet:
+    - Intro: wallet/intro.md
