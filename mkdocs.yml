@@ -7,7 +7,7 @@ theme:
 
 nav:
   - About CDK: index.md
+  - Wallet:
+      - Intro: wallet/intro.md
   - Mint:
     - Intro: mint/intro.md
-  - Wallet:
-    - Intro: wallet/intro.md
