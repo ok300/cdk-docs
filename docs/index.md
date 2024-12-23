@@ -8,7 +8,6 @@ It implements the Cashu protocol and exposes its operations through a simple int
 
 To get started, go to the [CDK Wallet Intro](wallet/intro.md)
 
-
 ## For mint operators
 
 CDK provides a full mint implementation, with instructions on how to configure, run and maintain it.
