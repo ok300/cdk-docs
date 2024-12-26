@@ -14,6 +14,7 @@ async fn main() {
     let mint_url = "https://testnut.cashu.space";
     let unit = CurrencyUnit::Sat;
     let amount = Amount::from(10);
+    aaa
 
     let localstore = WalletMemoryDatabase::default();
 
