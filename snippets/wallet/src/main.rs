@@ -1,22 +1,43 @@
+mod add_mints;
+mod get_balances;
+mod receive_payments;
+mod send_payments;
+
 use std::sync::Arc;
 
-use cdk::Amount;
+use anyhow::Result;
+use bip39::Mnemonic;
+use cdk::cdk_database::WalletDatabase;
+use cdk::wallet::MultiMintWallet;
 use cdk::Wallet;
-use cdk::cdk_database::WalletMemoryDatabase;
-use cdk::nuts::CurrencyUnit;
-use rand::Rng;
+use cdk_sqlite::WalletSqliteDatabase;
 
-// --8<-- [start:main]
-#[tokio::main]
-async fn main() {
-    let seed = rand::thread_rng().gen::<[u8; 32]>();
+fn main() {}
 
-    let mint_url = "https://testnut.cashu.space";
-    let unit = CurrencyUnit::Sat;
-    let amount = Amount::from(10);
+#[allow(dead_code)]
+// --8<-- [start:init_wallet]
+async fn init_wallet() -> Result<Arc<MultiMintWallet>> {
+    let work_dir = std::env::current_dir()?;
+    let sql_path = work_dir.join("cdk-db.sqlite");
+    let localstore = WalletSqliteDatabase::new(&sql_path).await.map(Arc::new)?;
 
-    let localstore = WalletMemoryDatabase::default();
+    let seed = Mnemonic::generate(12)?.to_seed_normalized("");
 
-    let wallet = Wallet::new(mint_url, unit, Arc::new(localstore), &seed, None).unwrap();
+    let mut wallets: Vec<Wallet> = Vec::new();
+    let mints = localstore.get_mints().await?;
+    for (mint_url, _) in mints {
+        let wallet = Wallet::new(
+            &mint_url.to_string(),
+            cdk::nuts::CurrencyUnit::Sat,
+            localstore.clone(),
+            &seed,
+            None,
+        )?;
+
+        wallets.push(wallet);
+    }
+    let multi_mint_wallet = MultiMintWallet::new(wallets);
+
+    Ok(Arc::new(multi_mint_wallet))
 }
-// --8<-- [end:main]
+// --8<-- [end:init_wallet]
