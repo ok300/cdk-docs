@@ -12,15 +12,31 @@ theme:
         name: Switch to light mode
   features:
     - navigation.footer
+    - content.code.copy
 
 markdown_extensions:
+  - admonition
   - pymdownx.superfences
   - pymdownx.snippets
 
 nav:
   - About CDK: index.md
   - Wallet:
-      - Intro: wallet/intro.md
-      - CLI: wallet/cli.md
+    - Intro: wallet/00_intro.md
+    - Get Started: wallet/01_get_started.md
+    - Core:
+      - Core Operations: wallet/core/00_intro.md
+      - Add Mints: wallet/core/01_add_mints.md
+      - Get Balances: wallet/core/02_get_balances.md
+      - Receive Payments: wallet/core/03_receive_payments.md
+      - Send Payments: wallet/core/04_send_payments.md
+      - Fees: wallet/core/05_fees.md
+    - Optional:
+      - Optional Operations: wallet/optional/00_intro.md
+      - Spending Conditions: wallet/optional/01_spending_conditions.md
+      - Payment Requests: wallet/optional/01_payment_requests.md
+      - Restore from Mnemonic: wallet/optional/02_restore_from_mnemonic.md
+    - Appendix:
+      - CLI: wallet/xx_appendix_cli.md
   - Mint:
-    - Intro: mint/intro.md
+    - Intro: mint/00_intro.md
