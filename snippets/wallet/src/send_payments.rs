@@ -1,8 +1,9 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use cdk::mint_url::MintUrl;
-use cdk::nuts::CurrencyUnit;
-use cdk::wallet::types::{SendKind, WalletKey};
-use cdk::wallet::MultiMintWallet;
+use cdk::nuts::{CurrencyUnit, Token};
+use cdk::types::Melted;
+use cdk::wallet::types::WalletKey;
+use cdk::wallet::{MultiMintWallet, SendOptions};
 use cdk::Amount;
 
 #[allow(dead_code)]
@@ -12,21 +13,24 @@ pub async fn send(
     mint_url: MintUrl,
     send_amount: Amount,
     send_unit: CurrencyUnit,
-) -> Result<()> {
+) -> Result<Token> {
     let wallet_key = WalletKey::new(mint_url, send_unit);
-    let token = multi_mint_wallet
-        .send(
-            &wallet_key,
+    let wallet = multi_mint_wallet.expect_wallet(&wallet_key).await?;
+
+    let prepared_send = wallet
+        .prepare_send(
             send_amount,
-            None,
-            None,
-            SendKind::OnlineExact,
-            true,
+            SendOptions {
+                include_fee: true,
+                ..Default::default()
+            },
         )
         .await?;
+    let token = wallet.send(prepared_send, None).await?;
+
     println!("{}", token);
 
-    Ok(())
+    Ok(token)
 }
 // --8<-- [end:send]
 
@@ -37,16 +41,13 @@ pub async fn melt(
     mint_url: MintUrl,
     send_unit: CurrencyUnit,
     bolt11: String,
-) -> Result<()> {
+) -> Result<Melted> {
     let wallet_key = WalletKey::new(mint_url, send_unit);
-    let wallet = multi_mint_wallet
-        .get_wallet(&wallet_key)
-        .await
-        .ok_or(anyhow!("Unknown wallet"))?;
+    let wallet = multi_mint_wallet.expect_wallet(&wallet_key).await?;
 
     let quote = wallet.melt_quote(bolt11, None).await?;
     let melt = wallet.melt(&quote.id).await?;
 
-    Ok(())
+    Ok(melt)
 }
 // --8<-- [end:melt]
