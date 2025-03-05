@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use anyhow::Result;
 use cdk::error::Error;
 use cdk::wallet::multi_mint_wallet::MultiMintWallet;

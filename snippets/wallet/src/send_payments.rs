@@ -1,8 +1,7 @@
 use anyhow::{anyhow, Result};
 use cdk::mint_url::MintUrl;
 use cdk::nuts::CurrencyUnit;
-use cdk::wallet::multi_mint_wallet::WalletKey;
-use cdk::wallet::types::SendKind;
+use cdk::wallet::types::{SendKind, WalletKey};
 use cdk::wallet::MultiMintWallet;
 use cdk::Amount;
 
