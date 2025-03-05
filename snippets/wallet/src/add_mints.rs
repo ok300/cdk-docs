@@ -7,7 +7,7 @@ use cdk::cdk_database::WalletDatabase;
 use cdk::mint_url::MintUrl;
 use cdk::nuts::CurrencyUnit;
 use cdk::wallet::client::MintConnector;
-use cdk::wallet::multi_mint_wallet::WalletKey;
+use cdk::wallet::types::WalletKey;
 use cdk::wallet::MultiMintWallet;
 use cdk::{HttpClient, Wallet};
 
