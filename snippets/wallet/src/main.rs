@@ -1,4 +1,5 @@
 mod add_mints;
+mod fees;
 mod get_balances;
 mod receive_payments;
 mod send_payments;
