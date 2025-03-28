@@ -40,3 +40,4 @@ nav:
       - CLI: wallet/xx_appendix_cli.md
   - Mint:
     - Intro: mint/00_intro.md
+    - Container (with LND): mint/01_container_with_lnd.md
