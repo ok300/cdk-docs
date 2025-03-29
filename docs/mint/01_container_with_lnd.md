@@ -20,7 +20,7 @@ cd ~/.cdk-mintd
 Copy the following two files from your LND node into this working directory:
 
 * `tls.cert`: typically found under `<lnd-data-dir>/tls.cert`
-* `invoices.macaroon`: typically found under `<lnd-data-dir>/data/chain/bitcoin/<network>/invoices.macaroon`
+* `admin.macaroon`: typically found under `<lnd-data-dir>/data/chain/bitcoin/<network>/admin.macaroon`
 
 Download the sample CDK mint configuration file and save it as `config.toml`:
 
@@ -38,14 +38,14 @@ Edit the downloaded `config.toml` as follows:
 * change `ln.ln_backend` to `lnd`
 * un-comment the entire `lnd` section
 * change `lnd.address` to `https://ip:port` with the IP and port where your LND node exposes its gRPC interface
-* change `lnd.macaroon_file` to `/root/.cdk-mintd/invoices.macaroon`
+* change `lnd.macaroon_file` to `/root/.cdk-mintd/admin.macaroon`
 * change `lnd.cert_file` to `/root/.cdk-mintd/tls.cert`
 
 Your mint working directory should now contain:
 
 ```
 ls ~/.cdk-mintd
-config.toml  invoices.macaroon  tls.cert
+config.toml  admin.macaroon  tls.cert
 ```
 
 Create and run a `cdk-mintd` container that also:
