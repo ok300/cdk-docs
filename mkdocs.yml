@@ -41,3 +41,6 @@ nav:
   - Mint:
     - Intro: mint/00_intro.md
     - Container (with LND): mint/01_container_with_lnd.md
+    - Container (with CLN): mint/02_container_with_cln.md
+    - Create System Service: mint/03_systemd_service.md
+    - Setup Reverse Proxy: mint/04_reverse_proxy.md
