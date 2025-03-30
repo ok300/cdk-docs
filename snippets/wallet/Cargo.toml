@@ -7,6 +7,9 @@ edition = "2021"
 anyhow = "1"
 bip39 = { version = "2.0", features = ["rand"] }
 # --8<-- [start:cdk-deps]
-cdk = { version = "0.7.2", features = ["wallet"] }
-cdk-sqlite = { version = "0.7.1", features = ["wallet"] }
+#cdk = { version = "0.8.1", features = ["wallet"] }
+#cdk-sqlite = { version = "0.8.1", features = ["wallet"] }
+
+cdk = { git = "https://github.com/ok300/cdk", branch = "ok300-add-expect-wallet", features = ["wallet"] }
+cdk-sqlite = { git = "https://github.com/ok300/cdk", branch = "ok300-add-expect-wallet", features = ["wallet"] }
 # --8<-- [end:cdk-deps]

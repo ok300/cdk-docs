@@ -1,11 +1,7 @@
 use std::str::FromStr;
-use std::sync::Arc;
 
 use anyhow::Result;
 use cdk::amount::SplitTarget;
-use cdk::cdk_database;
-use cdk::cdk_database::Error;
-use cdk::cdk_database::WalletDatabase;
 use cdk::mint_url::MintUrl;
 use cdk::nuts::MintQuoteState;
 use cdk::nuts::NotificationPayload;
@@ -15,15 +11,12 @@ use cdk::nuts::{CurrencyUnit, ProofsMethods};
 use cdk::wallet::types::WalletKey;
 use cdk::wallet::MultiMintWallet;
 use cdk::Amount;
-use cdk::Wallet;
 use cdk::WalletSubscription;
 
 #[allow(dead_code)]
 // --8<-- [start:receive_token]
 async fn receive_token(
     multi_mint_wallet: &MultiMintWallet,
-    localstore: Arc<dyn WalletDatabase<Err = cdk_database::Error> + Send + Sync>,
-    seed: &[u8],
     token_str: &str,
     signing_keys: &[SecretKey],
     preimage: &[String],
@@ -31,18 +24,13 @@ async fn receive_token(
     let token: Token = Token::from_str(token_str)?;
 
     let mint_url = token.mint_url()?;
+    let unit = token.unit().unwrap_or_default();
+    let wallet_key = WalletKey::new(mint_url.clone(), unit.clone());
 
-    let wallet_key = WalletKey::new(mint_url.clone(), token.unit().unwrap_or_default());
-
-    if multi_mint_wallet.get_wallet(&wallet_key).await.is_none() {
-        let wallet = Wallet::new(
-            &mint_url.to_string(),
-            token.unit().unwrap_or_default(),
-            localstore,
-            seed,
-            None,
-        )?;
-        multi_mint_wallet.add_wallet(wallet).await;
+    if !multi_mint_wallet.has(&wallet_key).await {
+        multi_mint_wallet
+            .create_and_add_wallet(&mint_url.to_string(), unit, None)
+            .await?;
     }
 
     let amount = multi_mint_wallet
@@ -56,23 +44,18 @@ async fn receive_token(
 // --8<-- [start:mint]
 pub async fn mint(
     multi_mint_wallet: &MultiMintWallet,
-    seed: &[u8],
-    localstore: Arc<dyn WalletDatabase<Err = Error> + Sync + Send>,
     mint_url: MintUrl,
     amount: Amount,
     unit: CurrencyUnit,
     description: Option<String>,
 ) -> Result<()> {
-    let wallet = match multi_mint_wallet
-        .get_wallet(&WalletKey::new(mint_url.clone(), unit.clone()))
-        .await
-    {
+    let wallet_key = WalletKey::new(mint_url.clone(), unit.clone());
+    let wallet = match multi_mint_wallet.get_wallet(&wallet_key).await {
         Some(wallet) => wallet.clone(),
         None => {
-            let wallet = Wallet::new(&mint_url.to_string(), unit, localstore, seed, None)?;
-
-            multi_mint_wallet.add_wallet(wallet.clone()).await;
-            wallet
+            multi_mint_wallet
+                .create_and_add_wallet(&mint_url.to_string(), unit.clone(), None)
+                .await?
         }
     };
 
