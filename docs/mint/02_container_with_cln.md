@@ -1,4 +1,4 @@
-# Run as container with LND
+# Run as container with CLN
 
 !!! note "Environment"
     This guide assumes a headless Fedora Server 41 machine. The exact commands may be different for your setup.
@@ -7,7 +7,7 @@ These instructions were last tested with `cdk-mintd v0.8.1`.
 
 Prerequisites
 
-* LND is reachable from the machine where you are installing the mint
+* CLN is running _on the same machine_ as the one where you're setting up the mint
 
 ---
 
@@ -17,11 +17,6 @@ Create a working directory that will be used by `cdk-mintd`:
 mkdir ~/.cdk-mintd
 cd ~/.cdk-mintd
 ```
-
-Copy the following two files from your LND node into this working directory:
-
-* `tls.cert`: typically found under `<lnd-data-dir>/tls.cert`
-* `admin.macaroon`: typically found under `<lnd-data-dir>/data/chain/bitcoin/<network>/admin.macaroon`
 
 Download the sample CDK mint configuration file and save it as `config.toml`:
 
@@ -37,30 +32,33 @@ Edit the downloaded `config.toml` as follows:
 * change `info.listen_host` to `0.0.0.0`
 * change `info.mnemonic` to a new mnemonic
 * edit the fields in `mint_info` with public details of your mint (name, description, etc)
-* change `ln.ln_backend` to `lnd`
-* un-comment the entire `lnd` section
-* change `lnd.address` to `https://ip:port` with the IP and port where your LND node exposes its gRPC interface
-* change `lnd.macaroon_file` to `/root/.cdk-mintd/admin.macaroon`
-* change `lnd.cert_file` to `/root/.cdk-mintd/tls.cert`
+* change `ln.ln_backend` to `cln`
+* un-comment the entire `cln` section
+* change `cln.rpc_path` to `/root/.lightningd/lightning-rpc`
 
 Your mint working directory should now contain:
 
 ```
 ls ~/.cdk-mintd
-config.toml  admin.macaroon  tls.cert
+config.toml
 ```
 
 Create and run a `cdk-mintd` container that also:
 
 * mounts your local mint working directory, so it's available from within the container
+* makes the local CLN RPC socket file available inside the container at `/root/.lightningd/lightning-rpc`
 * binds port `8085` (the `info.listen_port` defined in `config.toml`), so that it's reachable from outside the container, but only on your host's loopback interface
 
 ```
 podman run -d --name cdk-mintd \
     -p 127.0.0.1:8085:8085 \
     -v ~/.cdk-mintd:/root/.cdk-mintd:Z \
+    -v <path-to-lightning-rpc>:/root/.lightningd/lightning-rpc:Z \
     docker.io/thesimplekid/cdk-mintd:latest
 ```
+
+!!! note "Path to `lightning-rpc`"
+    Before running the command, replace `<path-to-lightning-rpc>` with the path to your CLN installation's `lightning-rpc` Unix domain socket, which is typically found at `~/.lightning/<network>/lightning-rpc`.
 
 With the container running, check that the mint service is reachable from your host:
 
