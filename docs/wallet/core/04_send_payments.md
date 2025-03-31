@@ -9,7 +9,11 @@
 --8<-- "snippets/wallet/src/send_payments.rs:send"
 ```
 
-## Send Lightning
+## Send to Lightning
+
+In this situation, the sender converts ecash into Lightning sats and pays the receiver's Lightning invoice in one step.
+
+This is sometimes also referred to as "melting ecash".
 
 ```rust
 --8<-- "snippets/wallet/src/send_payments.rs:melt"
