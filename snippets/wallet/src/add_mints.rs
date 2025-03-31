@@ -6,7 +6,7 @@ use cdk::nuts::CurrencyUnit;
 use cdk::wallet::types::WalletKey;
 use cdk::wallet::MintConnector;
 use cdk::wallet::MultiMintWallet;
-use cdk::{HttpClient, Wallet};
+use cdk::HttpClient;
 
 #[allow(dead_code)]
 // --8<-- [start:add_mint]
@@ -28,8 +28,9 @@ async fn add_mint(multi_mint_wallet: &MultiMintWallet, mint_url_str: &str) -> Re
         let wallet_key = WalletKey::new(mint_url.clone(), unit.clone());
 
         if !multi_mint_wallet.has(&wallet_key).await {
-            let wallet = Wallet::new(mint_url_str, unit, localstore.clone(), seed, None)?;
-            multi_mint_wallet.add_wallet(wallet).await;
+            multi_mint_wallet
+                .create_and_add_wallet(mint_url_str, unit, None)
+                .await?;
         }
     }
 
