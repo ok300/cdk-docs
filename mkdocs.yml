@@ -30,7 +30,6 @@ nav:
       - Get Balances: wallet/core/02_get_balances.md
       - Receive Payments: wallet/core/03_receive_payments.md
       - Send Payments: wallet/core/04_send_payments.md
-      - Fees: wallet/core/05_fees.md
     - Optional:
       - Optional Operations: wallet/optional/00_intro.md
       - Spending Conditions: wallet/optional/01_spending_conditions.md

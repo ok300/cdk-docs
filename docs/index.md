@@ -10,6 +10,6 @@ To get started, go to the [CDK Wallet Intro](wallet/00_intro.md)
 
 ## For mint operators
 
-CDK provides a full mint implementation, with instructions on how to configure, run and maintain it.
+CDK provides a full mint implementation, with guides on how to configure, run and maintain it.
 
 To get started, go to the [CDK Mint Intro](mint/00_intro.md)
