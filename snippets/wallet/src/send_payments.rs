@@ -14,7 +14,7 @@ pub async fn send(
     send_amount: Amount,
     send_unit: CurrencyUnit,
 ) -> Result<Token> {
-    let wallet_key = WalletKey::new(mint_url, send_unit);
+    let wallet_key = WalletKey::new(mint_url, send_unit.clone());
     let wallet = multi_mint_wallet.expect_wallet(&wallet_key).await?;
 
     let prepared_send = wallet
@@ -26,9 +26,10 @@ pub async fn send(
             },
         )
         .await?;
-    let token = wallet.send(prepared_send, None).await?;
+    println!("The fees are: {} {send_unit}", prepared_send.fee());
 
-    println!("{}", token);
+    let token = wallet.send(prepared_send, None).await?;
+    println!("The token is: {token}");
 
     Ok(token)
 }
