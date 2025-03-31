@@ -1,6 +1,8 @@
 # Add Mints
 
-Adding a mint to the CDK `MultiMintWallet` implies the user trusts this mint enough to hold a cashu balance on it. Adding a mint should therefore need explicit user interaction in the UI.
+!!! info "Trust model"
+    Adding a mint to the CDK `MultiMintWallet` implies the user trusts this mint enough to hold a cashu balance on it. Adding a mint should therefore need explicit user confirmation in the UI.
+
 
 ```rust
 --8<-- "snippets/wallet/src/add_mints.rs:add_mint"
